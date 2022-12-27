@@ -7,12 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@SessionAttributes("username")
 public class LoginController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
@@ -29,10 +27,11 @@ public class LoginController {
     public String login(@RequestParam String email, @RequestParam String password, ModelMap model) {
         logger.info("Login:Request Body email:{} password:{}", email, password);
         if (loginService.login(new LoginModel(email, password))) {
-            return "todo-list";
+            model.put("username", email);
+            return "redirect:todo-list";
         }
         else {
-            model.put("error", "invalid email or password");
+            model.put("errorMessage", "invalid email or password");
             return "login";
         }
     }
